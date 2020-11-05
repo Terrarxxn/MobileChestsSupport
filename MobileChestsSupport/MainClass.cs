@@ -16,7 +16,7 @@ namespace MainClasses
 		{
 			get
 			{
-				return "Terrarian (compiler) & AgaSpace (code)";
+				return "Terrarian";
 			}
 		}
 
@@ -24,7 +24,7 @@ namespace MainClasses
 		{
 			get
 			{
-				return "Defender";
+				return ":P";
 			}
 		}
 
@@ -32,7 +32,7 @@ namespace MainClasses
 		{
 			get
 			{
-				return "TADefender";
+				return "MobileChestsSupport";
 			}
 		}
 
@@ -46,29 +46,25 @@ namespace MainClasses
 
 		public MainClass(Main game) : base(game)
 		{
-			base.Order = 0;
+			base.Order = 32767;
 		}
 
 		public override void Initialize()
 		{
-			Commands.ChatCommands.Add(new Command("superadmin", new CommandDelegate(MainClass.AddAllChest), new string[]
-			{
-				"mcs"
-			}));
+			ServerApi.Hooks.GamePostInitialize.Register(this, (x) => MCS());
 		}
 
-		public static void AddAllChest(CommandArgs args)
+		public static void MCS()
 		{
-			List<Chest> allChests = DB.GetAllChests();
+			List<Chest> c = DB.GetAllChests();
 			for (int i = 0; i < Main.chest.Length; i++)
 			{
 				Main.chest[i] = null;
 			}
-			for (int j = 0; j <= allChests.Count - 1; j++)
+			for (int j = 0; j <= c.Count - 1; j++)
 			{
-				Main.chest[j] = allChests[j];
+				Main.chest[j] = c[j];
 			}
-			args.Player.SendSuccessMessage("Added all chests!");
 		}
 	}
 }
