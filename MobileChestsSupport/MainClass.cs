@@ -5,6 +5,7 @@ using InfiniteChestsV3;
 using Terraria;
 using TerrariaApi.Server;
 using TShockAPI;
+using System.Timers;
 
 namespace MainClasses
 {
@@ -16,7 +17,7 @@ namespace MainClasses
 		{
 			get
 			{
-				return "Terrarian";
+				return "Terrarian & AgaSpace";
 			}
 		}
 
@@ -24,7 +25,7 @@ namespace MainClasses
 		{
 			get
 			{
-				return ":P";
+				return "Adds mobile chests functions. For InfChestsV3";
 			}
 		}
 
@@ -51,10 +52,19 @@ namespace MainClasses
 
 		public override void Initialize()
 		{
-			ServerApi.Hooks.GamePostInitialize.Register(this, (x) => MCS());
+			ServerApi.Hooks.GamePostInitialize.Register(this, (x) => InitializeTimer());
 		}
 
-		public static void MCS()
+		private static void InitializeTimer()
+		{
+			new Timer(15000) // Таймер на каждые 15 секунд, проверяет на наличие сундуков, если нет - фиксит это
+			{
+				AutoReset = true,
+				Enabled = true
+			}.Elapsed += (x, y) => { if(Main.chest == null) { Fix(); } };
+		}
+		
+		private static void Fix() // тихо спиздел и ушел называца нашол..
 		{
 			List<Chest> c = DB.GetAllChests();
 			for (int i = 0; i < Main.chest.Length; i++)
